@@ -3,7 +3,9 @@
     09/06/2025
     CSE 4381
 
-    This code takes a user given message and encrypts it using a substitution with a randomized ciphertext
+    This code takes a user given message and encrypts it using a substitution with a randomized ciphertext, displays the encrypted message
+        decrypts the encrypted message, and then displays the original message from the decrypted ciphertext.
+    The main downside to this basic cryptosystem is it converts uppercase letters to lowercase letters
 */
 
 #include <stdio.h>
@@ -13,7 +15,9 @@
 #include <time.h>
 
 char plaintext[26] = "abcdefghijklmnopqrstuvwxyz";
+char upperPlaintext[26] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+//Fisher Yates algorithm that will randomize the alphabet to create a unique (somewhat) ciphertext for each compilation of the program
 void FisherYates(char cipher[], int n)
 {
     int temp, x, y;
@@ -40,7 +44,6 @@ int find_index(char finder, char code[])
     return -1;
 }
 
-
 //encrypts the message
 char* encrypt(char *message, char cipher[])
 {
@@ -53,17 +56,24 @@ char* encrypt(char *message, char cipher[])
     {
         find_char = message[i];
         char_index = find_index(find_char, plaintext);
-        //checks for non-alphabetical characters
+        //checks if the character is uppercase first, then checks for non-alphabetical characters
         if(char_index == -1)
         {
-            encrypted_message[i] = message[i];
+            char_index = find_index(find_char, upperPlaintext);
+            if(char_index == -1)
+            {
+                encrypted_message[i] = message[i];
+            }
+            else 
+            {
+                encrypted_message[i] = cipher[char_index];
+            }
         }
         else 
         {
             encrypted_message[i] = cipher[char_index];
         }
     }
-    
     return encrypted_message;
 }
 
@@ -89,7 +99,6 @@ char* decrypt(char *message, char cipher[])
             decrypted_message[i] = plaintext[char_index];
         }
     }
-
     return decrypted_message;
 }
 
@@ -99,7 +108,6 @@ int main(int argc, char *argv[])
     //ciphertext is the plaintext randomized through a FisherYates algorithm, so the ciphertext is randomized each time the cryptosystem is run
     char ciphertext[26] = "abcdefghijklmnopqrstuvwxyz";
     FisherYates(ciphertext, 26);
-    printf("\nCiphertext = %s\n", ciphertext);
 
     char message[10000];
     printf("\nType message you want to encrypt here: ");
@@ -107,7 +115,7 @@ int main(int argc, char *argv[])
 
     printf("\nMessage: %s", message);
     char *encryption = encrypt(message, ciphertext);
-    printf("\nEncrypted Message: %s", encryption);
+    printf("Encrypted Message: %s", encryption);
     char *decryption = decrypt(encryption, ciphertext);
-    printf("\nDecrypted Message: %s\n", decryption);
+    printf("Decrypted Message: %s\n", decryption);
 }
