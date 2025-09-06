@@ -3,11 +3,13 @@
     09/06/2025
     CSE 4381
 
-    This code takes a user given message and encrypts it using a substitution cipher that is predetermined and constant
+    This code takes a user given message and encrypts it using a substitution with a randomized ciphertext
 */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <time.h>
 
 char plaintext[26] = "abcdefghijklmnopqrstuvwxyz";
@@ -94,12 +96,12 @@ char* decrypt(char *message, char cipher[])
 
 int main(int argc, char *argv[])
 {
-    char message[10000];
-    //random substitution alphabet I created by rolling a bunch of dice
-    char ciphertext[26] = plaintext; //= {'o', 'g', 'c', 'i', 'k', 'b', 'e', 'f', 'q', 'd', 'a', 's', 'l', 'r', 'w', 'j', 'z', 'n', 'x', 'm', 'v', 'h', 'u', 'p', 't', 'y'};
+    //ciphertext is the plaintext randomized through a FisherYates algorithm, so the ciphertext is randomized each time the cryptosystem is run
+    char ciphertext[26] = "abcdefghijklmnopqrstuvwxyz";
     FisherYates(ciphertext, 26);
     printf("\nCiphertext = %s\n", ciphertext);
 
+    char message[10000];
     printf("\nType message you want to encrypt here: ");
     fgets(message, sizeof(message), stdin);
 
