@@ -25,10 +25,11 @@ char* encrypt(char *message, char cipher[])
     int length = strlen(message);
     char *encrypted_message = (char*) malloc(sizeof(char) * length);
 
-    for(int i = 0; i < 26; i++)
+    for(int i = 0; i < length; i++)
     {
         find_char = message[i];
         char_index = find_index(find_char, alphabet);
+        encrypted_message[i] = cipher[char_index];
     }
     
     return encrypted_message;
