@@ -1,11 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-const char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+char alphabet[26] = "abcdefghijklmnopqrstuvwxyz";
 
-
-int find_index(char finder, char *code)
+int find_index(char finder, char code[])
 {
     for(int i = 0; i < 26; i++)
     {
@@ -20,34 +20,37 @@ int find_index(char finder, char *code)
 //encrypts the message
 char* encrypt(char *message, char cipher[])
 {
-    char find_char = "";
+    char find_char;
     int char_index = 0;
     int length = strlen(message);
-    char *encrypted_message = (char*)malloc(sizeof(char) * length);
+    char *encrypted_message = (char*) malloc(sizeof(char) * length);
 
     for(int i = 0; i < 26; i++)
     {
         find_char = message[i];
         char_index = find_index(find_char, alphabet);
-        printf("Character: %c\tIndex: %d", find_char, char_index);
     }
+    
+    return encrypted_message;
 }
 
 //decrypts the message
 char* decrypt(char *message, char cipher[])
 {
     int length = strlen(message);
-    char *decrypted_message = (char*)malloc(sizeof(char) * length);
+    char *decrypted_message = (char*) malloc(sizeof(char) * length);
+
+    return decrypted_message;
 }
 
 int main(int argc, char *argv[])
 {
-    char *message = "";
+    char message[100];
     //random substitution alphabet I created by rolling a bunch of dice
     char cipher[26] = {'o', 'g', 'c', 'i', 'k', 'b', 'e', 'f', 'q', 'd', 'a', 's', 'l', 'r', 'w', 'j', 'z', 'n', 'x', 'm', 'v', 'h', 'u', 'p', 't', 'y'};
 
     printf("\nType message you want to encrypt here: ");
-    scanf("%s", &message);
+    scanf("%s", message);
 
     char *encryption = encrypt(message, cipher);
     //printf("\nEncrypted Message: %s", encryption);
