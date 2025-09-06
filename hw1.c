@@ -29,7 +29,14 @@ char* encrypt(char *message, char cipher[])
     {
         find_char = message[i];
         char_index = find_index(find_char, alphabet);
-        encrypted_message[i] = cipher[char_index];
+        if(char_index == -1)
+        {
+            encrypted_message[i] = message[i];
+        }
+        else 
+        {
+            encrypted_message[i] = cipher[char_index];
+        }
     }
     
     return encrypted_message;
@@ -47,7 +54,14 @@ char* decrypt(char *message, char cipher[])
     {
         find_char = message[i];
         char_index = find_index(find_char, cipher);
-        decrypted_message[i] = alphabet[char_index];
+        if(char_index == -1)
+        {
+            decrypted_message[i] = message[i];
+        }
+        else 
+        {
+            decrypted_message[i] = alphabet[char_index];
+        }
     }
 
     return decrypted_message;
@@ -55,15 +69,16 @@ char* decrypt(char *message, char cipher[])
 
 int main(int argc, char *argv[])
 {
-    char message[100];
+    char message[10000];
     //random substitution alphabet I created by rolling a bunch of dice
     char cipher[26] = {'o', 'g', 'c', 'i', 'k', 'b', 'e', 'f', 'q', 'd', 'a', 's', 'l', 'r', 'w', 'j', 'z', 'n', 'x', 'm', 'v', 'h', 'u', 'p', 't', 'y'};
 
     printf("\nType message you want to encrypt here: ");
-    scanf("%s", message);
+    fgets(message, sizeof(message), stdin);
 
+    printf("\nMessage: %s", message);
     char *encryption = encrypt(message, cipher);
     printf("\nEncrypted Message: %s", encryption);
     char *decryption = decrypt(encryption, cipher);
-    printf("\nDecrypted Message: %s", decryption);
+    printf("\nDecrypted Message: %s\n", decryption);
 }
