@@ -38,8 +38,17 @@ char* encrypt(char *message, char cipher[])
 //decrypts the message
 char* decrypt(char *message, char cipher[])
 {
+    char find_char;
+    int char_index = 0;
     int length = strlen(message);
     char *decrypted_message = (char*) malloc(sizeof(char) * length);
+
+    for(int i = 0; i < length; i++)
+    {
+        find_char = message[i];
+        char_index = find_index(find_char, cipher);
+        decrypted_message[i] = alphabet[char_index];
+    }
 
     return decrypted_message;
 }
@@ -54,7 +63,7 @@ int main(int argc, char *argv[])
     scanf("%s", message);
 
     char *encryption = encrypt(message, cipher);
-    //printf("\nEncrypted Message: %s", encryption);
-    //char *decryption = decrypt(encryption, cipher);
-    //printf("\nDecrypted Message: %s", decryption);
+    printf("\nEncrypted Message: %s", encryption);
+    char *decryption = decrypt(encryption, cipher);
+    printf("\nDecrypted Message: %s", decryption);
 }
