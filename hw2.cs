@@ -89,9 +89,6 @@ namespace RsaAlgorithm
 
 
 
-
-
-
         // Computes base^expo % mod
         static BigInteger powerMod(BigInteger baseVal, BigInteger exponent, BigInteger mod)
         {
@@ -195,12 +192,11 @@ namespace RsaAlgorithm
                 encryptedBlocks[i] = encrypt(messageBytes[i], pub, mod);
             }
 
-            Console.Write("\nEncrypted Message: ");
+            Console.Write("\nEncrypted Message:\n");
             foreach(BigInteger block in encryptedBlocks)
             {
                 Console.Write(block + " ");
             }
-
 
             byte[] decryptedBytes = new byte[encryptedBlocks.Length];
             for(int i = 0; i < encryptedBlocks.Length; i++)
