@@ -8,7 +8,7 @@ using System.Text;
 
 namespace RsaAlgorithm
 {
-    static class hw2()
+    static class hw2
     {
         // These two methods are simply here to create a random prime number for the keypair generator. 
         // I found examples of the Rabin Miller Test online and used them here because I felt like doing way too much.
@@ -47,7 +47,7 @@ namespace RsaAlgorithm
 
             using(var rng = RandomNumberGenerator.Create())
             {
-                byte[] bytes = new byte[candidate.GetByteCount];
+                byte[] bytes = new byte[candidate.GetByteCount()];
 
                 for(int i = 0; i < 5; i++)
                 {
@@ -113,7 +113,7 @@ namespace RsaAlgorithm
         }
 
         // Finds the modular inverse of x modulo phi using extended euclidean algorithm
-        static BigInteger inverseMod(int pub, int phi)
+        static BigInteger inverseMod(BigInteger pub, BigInteger phi)
         {
             BigInteger tempPhi = phi, x = 1, y = 0;
             if(phi == 1)
@@ -156,18 +156,19 @@ namespace RsaAlgorithm
             BigInteger phi = (randPrime1 - 1) * (randPrime2 - 1);
 
             pub = 65537;
+            priv = inverseMod(pub, phi);
 
             inverseMod(pub, phi);
 
-            Console.WriteLine("Generated primes:\nFirst prime: {randomPrime1}\nSecond prime: {randomPrime2}\n");
+            Console.WriteLine($"Generated primes:\nFirst prime: {randPrime1}\nSecond prime: {randPrime2}\n");
         }
 
-        static string encrypt(BigInteger plainVal, BigInteger pubExp, BigInteger mod)
+        static BigInteger encrypt(BigInteger plainVal, BigInteger pubExp, BigInteger mod)
         {
             return powerMod(plainVal, pubExp, mod);
         }
 
-        public static string decrypt(BigInteger cipherVal, BigInteger privExp, BigInteger mod)
+        static BigInteger decrypt(BigInteger cipherVal, BigInteger privExp, BigInteger mod)
         {
             return powerMod(cipherVal, privExp, mod);
         }
@@ -178,14 +179,13 @@ namespace RsaAlgorithm
 
             generateKeyPair(out pub, out priv, out mod);
 
-            Console.WriteLine("Public Key (Public, Modulus): ({pub}, {mod})");
-            Console.WriteLine("Private Key (Private, Modulus): ({priv}, {mod})\n");
+            Console.WriteLine($"Public Key (Public, Modulus): ({pub}, {mod})");
+            Console.WriteLine($"Private Key (Private, Modulus): ({priv}, {mod})\n");
 
 
             //reads user input to 
             Console.Write("Enter a message to encrypt: ");
             string message = Console.ReadLine() ?? "";
-            Console.WriteLine("Original Message: {message}");
 
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
             BigInteger[] encryptedBlocks = new BigInteger[messageBytes.Length];
@@ -195,7 +195,7 @@ namespace RsaAlgorithm
                 encryptedBlocks[i] = encrypt(messageBytes[i], pub, mod);
             }
 
-            Console.Write("Encrypted Message: ");
+            Console.Write("\nEncrypted Message: ");
             foreach(BigInteger block in encryptedBlocks)
             {
                 Console.Write(block + " ");
@@ -205,10 +205,11 @@ namespace RsaAlgorithm
             byte[] decryptedBytes = new byte[encryptedBlocks.Length];
             for(int i = 0; i < encryptedBlocks.Length; i++)
             {
-                decryptedBytes = (byte)decrypt(encryptedBlocks[i], priv, mod);
+                BigInteger decryptedValue = decrypt(encryptedBlocks[i], priv, mod);
+                decryptedBytes[i] = (byte)(int)decryptedValue;
             }
             string decryptedMessage = Encoding.UTF8.GetString(decryptedBytes);
-            Console.WriteLine($"\nDecrypted Message: {decryptedMessage}");
+            Console.WriteLine($"\n\nDecrypted Message: {decryptedMessage}");
         }
     }
 }

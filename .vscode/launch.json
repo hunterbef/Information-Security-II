@@ -3,22 +3,13 @@
   "configurations": [
     {
       "name": "C/C++ Runner: Debug Session",
-      "type": "cppdbg",
+      "type": "cppvsdbg",
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "externalConsole": true,
+      "console": "externalTerminal",
       "cwd": "c:/Users/Hunter/Desktop/Infosec2/Information-Security-II",
-      "program": "c:/Users/Hunter/Desktop/Infosec2/Information-Security-II/build/Debug/outDebug",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
+      "program": "c:/Users/Hunter/Desktop/Infosec2/Information-Security-II/build/Debug/outDebug"
     }
   ]
 }
