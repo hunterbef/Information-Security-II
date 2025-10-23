@@ -8,12 +8,12 @@ using System.Text;
 
 namespace RsaAlgorithm
 {
-    public class hw2()
+    static class hw2()
     {
         // These two methods are simply here to create a random prime number for the keypair generator. 
         // I found examples of the Rabin Miller Test online and used them here because I felt like doing way too much.
         // These two methods are the only code found from an outside source.
-        public static BigInteger GenerateRandomPrime(int bits)
+        static BigInteger GenerateRandomPrime(int bits)
         {
             using (var rng = RandomNumberGenerator.Create())
             {
@@ -23,14 +23,14 @@ namespace RsaAlgorithm
                 do
                 {
                     rng.GetBytes(bytes);
-                    bytes[^1] |= 0x80;
+                    bytes[bytes.Length - 1] |= 0x80;
                     candidate = new BigInteger(bytes, isUnsigned: true, isBigEndian: true);
                     candidate |= 1;
                 } while(!RabinMillerTest(candidate));
                 return candidate;
             }
         }
-        public static bool RabinMillerTest(BigInteger candidate)
+        static bool RabinMillerTest(BigInteger candidate)
         {
             if(candidate < 2) return false;
             if(candidate == 2 || candidate == 3) return true;
@@ -93,7 +93,7 @@ namespace RsaAlgorithm
 
 
         // Computes base^expo % mod
-        public static BigInteger powerMod(BigInteger baseVal, BigInteger exponent, BigInteger mod)
+        static BigInteger powerMod(BigInteger baseVal, BigInteger exponent, BigInteger mod)
         {
             BigInteger result = 1;
             baseVal = baseVal % mod;
@@ -113,7 +113,7 @@ namespace RsaAlgorithm
         }
 
         // Finds the modular inverse of x modulo phi using extended euclidean algorithm
-        public static BigInteger inverseMod(int pub, int phi)
+        static BigInteger inverseMod(int pub, int phi)
         {
             BigInteger tempPhi = phi, x = 1, y = 0;
             if(phi == 1)
@@ -141,7 +141,7 @@ namespace RsaAlgorithm
         }
 
         // Generates a key pair with two random prime numbers
-        public static void generateKeyPair(out BigInteger pub, out BigInteger priv, out BigInteger mod)
+        static void generateKeyPair(out BigInteger pub, out BigInteger priv, out BigInteger mod)
         {
             BigInteger randPrime1 = GenerateRandomPrime(16);
             BigInteger randPrime2 = GenerateRandomPrime(16);
@@ -162,7 +162,7 @@ namespace RsaAlgorithm
             Console.WriteLine("Generated primes:\nFirst prime: {randomPrime1}\nSecond prime: {randomPrime2}\n");
         }
 
-        public static string encrypt(BigInteger plainVal, BigInteger pubExp, BigInteger mod)
+        static string encrypt(BigInteger plainVal, BigInteger pubExp, BigInteger mod)
         {
             return powerMod(plainVal, pubExp, mod);
         }
@@ -172,7 +172,7 @@ namespace RsaAlgorithm
             return powerMod(cipherVal, privExp, mod);
         }
         
-        public static void Main()
+        static void Main()
         {
             BigInteger mod, pub, priv;
 
