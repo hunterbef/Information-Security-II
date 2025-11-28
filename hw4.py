@@ -23,58 +23,58 @@ def gcd(a, b):
     else:
         return gcd(b, a % b)
     
-def hash(plaintext, q):
-    val = 0
-    for char in plaintext:
-        val = (val * 257 * ord(char)) % q
-    return val
+def extendedgcd(a, b):
+    if b == 0:
+        return a, 1, 0
+    root, x, y = extendedgcd(b, a % b)
+    privKey = y
+    pubKey = x - (a // b) * y
+    return root, privKey, pubKey
     
+def modInv(a, mod):
+    root, privKey, pubKey = extendedgcd(a, mod)
+    return privKey % mod
     
-def generateKey(prime, generator, privKey):
-    key = random.randint(10**20, prime)
+def generateKey(prime):
+    key = random.randint(2, prime - 2)
     while(gcd(prime, key) != 1):
-        key = random.randint(10**20, prime)
+        key = random.randint(2, prime - 2)
     return key
 
-def sign(plaintext, prime, exp, root):
-    ciphertext = []
+def sign(message, prime, root, privKey):
+    hash = sum([ord(char) for char in message]) % (prime - 1)
 
-    privKey = generateKey(prime)
-    sender = powerMod(exp, privKey, prime)
-    pubKey = powerMod(root, privKey, prime)
+    key = generateKey(prime)
 
-    for i in range(0, len(plaintext)):
-        ciphertext.append(plaintext[i])
+    mod = powerMod(root, key, prime)
 
-    for i in range(0, len(ciphertext)):
-        ciphertext[i] = sender * ord(ciphertext[i])
+    inv = modInv(key, prime - 1)
+    sig = (inv * (hash - privKey * mod)) % (prime - 1)
 
-    return ciphertext, pubKey
+    return (mod, sig)
 
 
-def verify(ciphertext, prime, privKey, root):
-    plaintext = []
+def verify(message, signature, prime, root, pubKey):
+    mod, sig = signature
 
-    exp = powerMod(prime, privKey, root)
-    for i in range(0, len(ciphertext)):
-        plaintext.append(chr(int(ciphertext[i] / exp)))
+    hash = sum([ord(char) for char in message]) % (prime - 1)
 
-    return plaintext
+    left = powerMod(root, hash, prime)
+    right = (powerMod(pubKey, mod, prime) * powerMod(mod, sig, prime)) % prime
+
+    return left == right
 
 if __name__ == '__main__':
-    prime = random.randint(10**20, 10**50)
-    generator = random.randint(2, prime)
-    privKey = 127
+    prime = random.randint(10**10, 10**12)
+    root = random.randint(2, prime - 1)
 
-    keys = generateKey(prime, generator, privKey)
-    exp = powerMod(generator, privKey, prime)
+    privKey = random.randint(2, prime - 2)
+    pubKey = powerMod(root, privKey, prime)
 
-    message = input("Enter a message to encrypt: ")
-    print("Original message: ", message)
+    message = input("Enter a message to sign: ")
 
-    ciphertext, pubKey = sign(message, prime, exp, root)
-    print("Encrypted message: ", ciphertext)
+    sig = sign(message, prime, root, privKey)
+    print("Signature: ", sig)
 
-    decryption = verify(ciphertext, pubKey, privKey, prime)
-    plaintext = ''.join(decryption)
-    print("Decrypted message: ", plaintext)
+    valid = verify(message, sig, prime, root, pubKey)
+    print("Signature valid? ", valid)
